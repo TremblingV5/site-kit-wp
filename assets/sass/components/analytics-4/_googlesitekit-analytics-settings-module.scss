@@ -77,4 +77,58 @@
 			width: 10px;
 		}
 	}
+
+	.googlesitekit-settings-advanced-data-breakdowns--loading {
+		padding-top: 10px;
+	}
+
+	.googlesitekit-settings-advanced-data-breakdowns__row {
+		align-items: flex-start;
+		display: flex;
+		gap: 12px;
+	}
+
+	.googlesitekit-settings-advanced-data-breakdowns__icon {
+		align-items: center;
+		color: $c-content-primary;
+		display: flex;
+		flex-shrink: 0;
+		height: 20px;
+		justify-content: center;
+		width: 20px;
+
+		svg {
+			height: 16px;
+			width: 16px;
+		}
+	}
+
+	.googlesitekit-settings-advanced-data-breakdowns__tick {
+		align-items: center;
+		background-color: $c-content-primary;
+		border-radius: 11px;
+		color: $c-content-on-primary;
+		display: flex;
+		height: 20px;
+		justify-content: center;
+		width: 20px;
+
+		svg {
+			height: 10px;
+			width: 10px;
+		}
+	}
+
+	.googlesitekit-settings-advanced-data-breakdowns__content {
+		flex: 1;
+	}
+
+	.googlesitekit-settings-advanced-data-breakdowns__title {
+		font-weight: 500;
+		margin: 0;
+	}
+
+	.googlesitekit-settings-advanced-data-breakdowns__action {
+		flex-shrink: 0;
+	}
 }
