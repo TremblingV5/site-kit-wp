@@ -88,6 +88,12 @@ export const CUSTOM_DIMENSION_DEFINITIONS = {
 	},
 };
 
+export const SITE_GOALS_CUSTOM_DIMENSIONS = [
+	...Object.keys( CUSTOM_DIMENSION_DEFINITIONS ),
+	'googlesitekit_event_provider',
+	'googlesitekit_form_id',
+];
+
 export const ENUM_CONVERSION_EVENTS = {
 	ADD_TO_CART: 'add_to_cart',
 	PURCHASE: 'purchase',

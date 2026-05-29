@@ -34,6 +34,7 @@ import {
 	createRegistrySelector,
 } from 'googlesitekit-data';
 import { KEY_METRICS_WIDGETS } from '@/js/components/KeyMetrics/key-metrics-widgets';
+import { isFeatureEnabled } from '@/js/features';
 import { createFetchStore } from '@/js/googlesitekit/data/create-fetch-store';
 import {
 	CORE_USER,
@@ -42,7 +43,11 @@ import {
 import { CORE_MODULES } from '@/js/googlesitekit/modules/datastore/constants';
 import { MODULE_SLUG_ANALYTICS_4 } from '@/js/modules/analytics-4/constants';
 import { isValidPropertyID } from '@/js/modules/analytics-4/utils/validation';
-import { CUSTOM_DIMENSION_DEFINITIONS, MODULES_ANALYTICS_4 } from './constants';
+import {
+	CUSTOM_DIMENSION_DEFINITIONS,
+	MODULES_ANALYTICS_4,
+	SITE_GOALS_CUSTOM_DIMENSIONS,
+} from './constants';
 
 const customDimensionFields = [
 	'parameterName',
@@ -110,6 +115,7 @@ const baseActions = {
 	 * Creates custom dimensions and syncs them in the settings.
 	 *
 	 * @since 1.113.0
+	 * @since n.e.x.t Folds in `SITE_GOALS_CUSTOM_DIMENSIONS` when the `siteGoals` feature flag is on and advanced data breakdowns is enabled.
 	 */
 	*createCustomDimensions() {
 		const registry = yield commonActions.getRegistry();
@@ -120,6 +126,9 @@ const baseActions = {
 				registry.resolveSelect( MODULES_ANALYTICS_4 ).getSettings(),
 				registry.resolveSelect( CORE_USER ).getKeyMetricsSettings(),
 				registry.resolveSelect( CORE_USER ).getUserInputSettings(),
+				registry
+					.resolveSelect( MODULES_ANALYTICS_4 )
+					.isAdvancedDataBreakdownsEnabled(),
 			] )
 		);
 
@@ -139,6 +148,21 @@ const baseActions = {
 		const uniqueRequiredCustomDimensions = [
 			...new Set( requiredCustomDimensions ),
 		];
+
+		const isAdvancedDataBreakdownsEnabled = registry
+			.select( MODULES_ANALYTICS_4 )
+			.isAdvancedDataBreakdownsEnabled();
+
+		if (
+			isFeatureEnabled( 'siteGoals' ) &&
+			isAdvancedDataBreakdownsEnabled
+		) {
+			SITE_GOALS_CUSTOM_DIMENSIONS.forEach( ( dimension ) => {
+				if ( ! uniqueRequiredCustomDimensions.includes( dimension ) ) {
+					uniqueRequiredCustomDimensions.push( dimension );
+				}
+			} );
+		}
 
 		const availableCustomDimensions = registry
 			.select( MODULES_ANALYTICS_4 )
