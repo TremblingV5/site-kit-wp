@@ -67,7 +67,7 @@ class Advanced_Data_Breakdowns_SettingsTest extends SettingsTestCase {
 		);
 	}
 
-	public function test_sanitize_casts_enabled_to_bool() {
+	public function test_sanitize_casts_enabled_to_boolean() {
 		$this->settings->register();
 
 		$this->options->set(

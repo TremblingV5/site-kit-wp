@@ -220,7 +220,7 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 				expect( fetchMock ).not.toHaveFetched();
 			} );
 
-			it( 'does not include the site-goals dimensions when advanced data breakdowns is off', async () => {
+			it( 'does not include the Site Goals dimensions when advanced data breakdowns is off', async () => {
 				registry.dispatch( MODULES_ANALYTICS_4 ).setSettings( {
 					propertyID,
 					availableCustomDimensions: customDimensionNames,
@@ -236,11 +236,11 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 					.dispatch( MODULES_ANALYTICS_4 )
 					.createCustomDimensions();
 
-				// All key-metric dims are already available, so no fetch fires.
+				// All key metric dimensions are already available, so no network request is made.
 				expect( fetchMock ).not.toHaveFetched();
 			} );
 
-			it( 'includes site-goals dimensions when the flag and the setting are both on', async () => {
+			it( 'includes the Site Goals dimensions when the flag and the setting are both on', async () => {
 				global._googlesitekitBaseData = {
 					...( global._googlesitekitBaseData || {} ),
 					enabledFeatures: [ 'siteGoals' ],
@@ -288,22 +288,15 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 					.calls( createEndpoint )
 					.map( ( [ , req ] ) => JSON.parse( req.body ) );
 				const dimensionNames = createCalls.map(
-					( payload ) =>
-						payload?.data?.customDimension?.parameterName
+					( payload ) => payload?.data?.customDimension?.parameterName
 				);
 
-				expect( dimensionNames ).toContain(
-					'googlesitekit_post_date'
-				);
-				expect( dimensionNames ).toContain(
-					'googlesitekit_post_type'
-				);
+				expect( dimensionNames ).toContain( 'googlesitekit_post_date' );
+				expect( dimensionNames ).toContain( 'googlesitekit_post_type' );
 				expect( dimensionNames ).toContain(
 					'googlesitekit_event_provider'
 				);
-				expect( dimensionNames ).toContain(
-					'googlesitekit_form_id'
-				);
+				expect( dimensionNames ).toContain( 'googlesitekit_form_id' );
 			} );
 
 			it( 'creates missing custom dimensions and syncs them in the Analytics 4 module settings', async () => {

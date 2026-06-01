@@ -311,8 +311,7 @@ WithEnhancedConversionsNotice.parameters = {
 };
 
 export const WithSiteGoalsBreakdownsRow = Template.bind( null );
-WithSiteGoalsBreakdownsRow.storyName =
-	'With Site Goals custom dimensions row';
+WithSiteGoalsBreakdownsRow.storyName = 'With Site Goals custom dimensions row';
 WithSiteGoalsBreakdownsRow.parameters = {
 	features: [ 'siteGoals' ],
 };

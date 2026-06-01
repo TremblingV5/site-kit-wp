@@ -28,7 +28,7 @@ use WP_Error;
 class Save_Advanced_Data_Breakdowns_Settings extends Datapoint implements Executable_Datapoint {
 
 	/**
-	 * Advanced_Data_Breakdowns_Settings instance.
+	 * The advanced data breakdowns settings this datapoint writes to.
 	 *
 	 * @since n.e.x.t
 	 * @var Advanced_Data_Breakdowns_Settings
@@ -40,7 +40,7 @@ class Save_Advanced_Data_Breakdowns_Settings extends Datapoint implements Execut
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param array $definition Definition fields.
+	 * @param array $definition Datapoint definition. Must include the `advanced_data_breakdowns_settings` instance.
 	 */
 	public function __construct( array $definition ) {
 		parent::__construct( $definition );
@@ -48,13 +48,15 @@ class Save_Advanced_Data_Breakdowns_Settings extends Datapoint implements Execut
 	}
 
 	/**
-	 * Creates a request object.
+	 * Builds the callback that saves the advanced data breakdowns settings.
+	 *
+	 * Returns a `WP_Error` when the user cannot manage options, and throws when the `enabled` value is not a boolean.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param Data_Request $data_request Data request object.
-	 * @return callable|WP_Error Closure that saves the settings, or WP_Error on failure.
-	 * @throws Invalid_Param_Exception Thrown when a parameter is invalid.
+	 * @param Data_Request $data_request The REST data request, read for its `settings` payload.
+	 * @return callable|WP_Error Callback that saves the settings, or a `WP_Error` when the user lacks permission.
+	 * @throws Invalid_Param_Exception When `enabled` is set but is not a boolean.
 	 */
 	public function create_request( Data_Request $data_request ) {
 		if ( ! current_user_can( Permissions::MANAGE_OPTIONS ) ) {
@@ -85,13 +87,13 @@ class Save_Advanced_Data_Breakdowns_Settings extends Datapoint implements Execut
 	}
 
 	/**
-	 * Parses a response.
+	 * Returns the response unchanged.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param mixed        $response Request response.
-	 * @param Data_Request $data     Data request object.
-	 * @return mixed The response without any modifications.
+	 * @param mixed        $response The request response.
+	 * @param Data_Request $data     The REST data request.
+	 * @return mixed The same response, unchanged.
 	 */
 	public function parse_response( $response, Data_Request $data ) {
 		return $response;

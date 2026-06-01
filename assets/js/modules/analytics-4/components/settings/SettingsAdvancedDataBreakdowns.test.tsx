@@ -17,6 +17,11 @@
  */
 
 /**
+ * WordPress dependencies
+ */
+import { WPDataRegistry } from '@wordpress/data/build-types/registry';
+
+/**
  * Internal dependencies
  */
 import { CORE_USER } from '@/js/googlesitekit/datastore/user/constants';
@@ -35,7 +40,7 @@ import {
 import SettingsAdvancedDataBreakdowns from './SettingsAdvancedDataBreakdowns';
 
 describe( 'SettingsAdvancedDataBreakdowns', () => {
-	let registry;
+	let registry: WPDataRegistry;
 	const propertyID = '123456';
 
 	beforeEach( () => {
@@ -70,9 +75,7 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 			registry,
 		} );
 
-		expect(
-			getByRole( 'button', { name: /enable/i } )
-		).toBeInTheDocument();
+		expect( getByRole( 'button', { name: /enable/i } ) ).toBeInTheDocument();
 	} );
 
 	it( 'shows the green tick and hides the Enable button when all dimensions exist', () => {

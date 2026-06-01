@@ -26,7 +26,7 @@ use Google\Site_Kit\Modules\Analytics_4\Advanced_Data_Breakdowns_Settings;
 class Get_Advanced_Data_Breakdowns_Settings extends Shareable_Datapoint implements Executable_Datapoint {
 
 	/**
-	 * Advanced_Data_Breakdowns_Settings instance.
+	 * The advanced data breakdowns settings this datapoint reads from.
 	 *
 	 * @since n.e.x.t
 	 * @var Advanced_Data_Breakdowns_Settings
@@ -38,7 +38,7 @@ class Get_Advanced_Data_Breakdowns_Settings extends Shareable_Datapoint implemen
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param array $definition Definition fields.
+	 * @param array $definition Datapoint definition. Must include the `advanced_data_breakdowns_settings` instance.
 	 */
 	public function __construct( array $definition ) {
 		parent::__construct( $definition );
@@ -46,12 +46,14 @@ class Get_Advanced_Data_Breakdowns_Settings extends Shareable_Datapoint implemen
 	}
 
 	/**
-	 * Creates a request object.
+	 * Builds the callback that reads the advanced data breakdowns settings.
+	 *
+	 * Users who can manage options get the full settings. Everyone else gets only the view-only keys.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param Data_Request $data_request Data request object.
-	 * @return callable Closure that returns the advanced data breakdowns settings.
+	 * @param Data_Request $data_request The REST data request.
+	 * @return callable Callback that returns the settings the current user may read.
 	 */
 	public function create_request( Data_Request $data_request ) {
 		$advanced_data_breakdowns_settings = $this->advanced_data_breakdowns_settings;
@@ -66,13 +68,13 @@ class Get_Advanced_Data_Breakdowns_Settings extends Shareable_Datapoint implemen
 	}
 
 	/**
-	 * Parses a response.
+	 * Returns the response unchanged.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param mixed        $response Request response.
-	 * @param Data_Request $data     Data request object.
-	 * @return mixed The response without any modifications.
+	 * @param mixed        $response The request response.
+	 * @param Data_Request $data     The REST data request.
+	 * @return mixed The same response, unchanged.
 	 */
 	public function parse_response( $response, Data_Request $data ) {
 		return $response;

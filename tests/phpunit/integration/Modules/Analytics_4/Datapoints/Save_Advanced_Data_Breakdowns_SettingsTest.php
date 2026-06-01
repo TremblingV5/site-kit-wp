@@ -86,7 +86,7 @@ class Save_Advanced_Data_Breakdowns_SettingsTest extends TestCase {
 		$this->assertTrue( $this->settings->is_enabled(), 'The dedicated option should be persisted.' );
 	}
 
-	public function test_create_request__does_not_touch_main_ga4_settings() {
+	public function test_create_request__does_not_touch_main_analytics_4_settings() {
 		$user = $this->factory()->user->create_and_get( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $user->ID );
 
@@ -108,16 +108,16 @@ class Save_Advanced_Data_Breakdowns_SettingsTest extends TestCase {
 		$request = $this->datapoint->create_request( $data_request );
 		$request();
 
-		$ga4_settings = get_option( 'googlesitekit_analytics-4_settings' );
+		$analytics_4_settings = get_option( 'googlesitekit_analytics-4_settings' );
 		$this->assertSame(
 			'12345',
-			$ga4_settings['propertyID'],
-			'Saving the dedicated option should not modify the main GA4 settings.'
+			$analytics_4_settings['propertyID'],
+			'Saving the dedicated option should not modify the main Analytics 4 settings.'
 		);
 		$this->assertArrayNotHasKey(
 			'enabled',
-			$ga4_settings,
-			'The enabled flag should not appear on the main GA4 settings.'
+			$analytics_4_settings,
+			'The enabled flag should not appear on the main Analytics 4 settings.'
 		);
 	}
 

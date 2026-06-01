@@ -50,7 +50,7 @@ class Get_Advanced_Data_Breakdowns_SettingsTest extends TestCase {
 			)
 		);
 
-		// Ensure admin user has Permissions::MANAGE_OPTIONS cap regardless of authentication.
+		// Let an admin pass the `Permissions::MANAGE_OPTIONS` check without setting up Site Kit authentication.
 		add_filter(
 			'map_meta_cap',
 			function ( $caps, $cap ) {
@@ -99,7 +99,7 @@ class Get_Advanced_Data_Breakdowns_SettingsTest extends TestCase {
 		$this->assertTrue( $response['enabled'], 'View-only users should read the stored value.' );
 	}
 
-	public function test_merge__does_not_touch_main_ga4_settings() {
+	public function test_merge__does_not_touch_main_analytics_4_settings() {
 		$user = $this->factory()->user->create_and_get( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $user->ID );
 
@@ -110,11 +110,11 @@ class Get_Advanced_Data_Breakdowns_SettingsTest extends TestCase {
 
 		$this->settings->merge( array( 'enabled' => true ) );
 
-		$ga4_settings = get_option( 'googlesitekit_analytics-4_settings' );
+		$analytics_4_settings = get_option( 'googlesitekit_analytics-4_settings' );
 		$this->assertSame(
 			'12345',
-			$ga4_settings['propertyID'],
-			'The main GA4 settings option should remain untouched after writing the dedicated option.'
+			$analytics_4_settings['propertyID'],
+			'The main Analytics 4 settings option should remain untouched after writing the dedicated option.'
 		);
 	}
 

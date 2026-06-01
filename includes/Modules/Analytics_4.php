@@ -210,7 +210,7 @@ final class Analytics_4 extends Module implements Module_With_Inline_Data, Modul
 	protected $audience_utilities;
 
 	/**
-	 * Advanced_Data_Breakdowns_Settings instance.
+	 * The advanced data breakdowns settings store.
 	 *
 	 * @since n.e.x.t
 	 *

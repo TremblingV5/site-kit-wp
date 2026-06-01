@@ -26,6 +26,7 @@ import invariant from 'invariant';
  */
 import { get, set } from 'googlesitekit-api';
 import {
+	Select,
 	commonActions,
 	createReducer,
 	createRegistrySelector,
@@ -42,26 +43,52 @@ import { MODULES_ANALYTICS_4 } from './constants';
 const { setErrorForAction, clearActionError } = errorStoreActions;
 
 /**
+ * Advanced data breakdowns settings shape.
+ *
+ * @since n.e.x.t
+ */
+export interface AdvancedDataBreakdownsSettings {
+	enabled: boolean;
+}
+
+interface AdvancedDataBreakdownsState {
+	advancedDataBreakdownsSettings: AdvancedDataBreakdownsSettings | undefined;
+}
+
+const SET_ADVANCED_DATA_BREAKDOWNS_ENABLED =
+	'SET_ADVANCED_DATA_BREAKDOWNS_ENABLED' as const;
+
+type Action = {
+	type: typeof SET_ADVANCED_DATA_BREAKDOWNS_ENABLED;
+	payload: { enabled: boolean };
+};
+
+/**
  * Checks that advanced data breakdowns settings are an object with a boolean `enabled` flag.
  *
  * @since n.e.x.t
  *
- * @param {Object} settings Advanced data breakdowns settings to validate.
+ * @param settings Advanced data breakdowns settings to validate.
  */
-function validateAdvancedDataBreakdownsSettings( settings ) {
+function validateAdvancedDataBreakdownsSettings( settings: unknown ) {
 	invariant(
 		settings && typeof settings === 'object',
 		'advancedDataBreakdownsSettings should be an object.'
 	);
 	invariant(
-		typeof settings.enabled === 'boolean',
+		typeof ( settings as { enabled?: unknown } ).enabled === 'boolean',
 		'enabled should be a boolean.'
 	);
 }
 
-const fetchStoreReducerCallback = createReducer( ( state, settings ) => {
-	state.advancedDataBreakdownsSettings = settings;
-} );
+const fetchStoreReducerCallback = createReducer(
+	(
+		state: AdvancedDataBreakdownsState,
+		settings: AdvancedDataBreakdownsSettings
+	) => {
+		state.advancedDataBreakdownsSettings = settings;
+	}
+);
 
 const fetchGetAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 	baseName: 'getAdvancedDataBreakdownsSettings',
@@ -81,7 +108,7 @@ const fetchGetAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 
 const fetchSaveAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 	baseName: 'saveAdvancedDataBreakdownsSettings',
-	controlCallback: ( settings ) =>
+	controlCallback: ( settings: AdvancedDataBreakdownsSettings ) =>
 		set(
 			'modules',
 			MODULE_SLUG_ANALYTICS_4,
@@ -89,29 +116,25 @@ const fetchSaveAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 			{ settings }
 		),
 	reducerCallback: fetchStoreReducerCallback,
-	argsToParams: ( settings ) => settings,
+	argsToParams: ( settings: AdvancedDataBreakdownsSettings ) => settings,
 	validateParams: validateAdvancedDataBreakdownsSettings,
 	isAction: true,
 } );
 
-const SET_ADVANCED_DATA_BREAKDOWNS_ENABLED =
-	'SET_ADVANCED_DATA_BREAKDOWNS_ENABLED';
-
-const baseInitialState = {
+const baseInitialState: AdvancedDataBreakdownsState = {
 	advancedDataBreakdownsSettings: undefined,
 };
 
 const baseActions = {
-	/* eslint-disable-next-line sitekit/jsdoc-no-unnamed-boolean-params */
 	/**
 	 * Sets the advanced data breakdowns enabled flag in local state.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param {boolean} enabled Whether breakdowns are enabled.
-	 * @return {Object} Redux-style action.
+	 * @param enabled Whether breakdowns are enabled.
+	 * @return Redux-style action.
 	 */
-	setAdvancedDataBreakdownsEnabled( enabled ) {
+	setAdvancedDataBreakdownsEnabled( enabled: boolean ) {
 		invariant(
 			typeof enabled === 'boolean',
 			'enabled should be a boolean.'
@@ -128,7 +151,7 @@ const baseActions = {
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @return {Object} Object with `response` and `error`.
+	 * @return Object with `response` and `error`.
 	 */
 	saveAdvancedDataBreakdownsSettings: createValidatedAction(
 		() => {},
@@ -173,21 +196,23 @@ const baseResolvers = {
 	},
 };
 
-const baseReducer = createReducer( ( state, { type, payload } ) => {
-	switch ( type ) {
-		case SET_ADVANCED_DATA_BREAKDOWNS_ENABLED: {
-			const { enabled } = payload;
-			state.advancedDataBreakdownsSettings = {
-				...state.advancedDataBreakdownsSettings,
-				enabled,
-			};
-			break;
-		}
+const baseReducer = createReducer(
+	( state: AdvancedDataBreakdownsState, { type, payload }: Action ) => {
+		switch ( type ) {
+			case SET_ADVANCED_DATA_BREAKDOWNS_ENABLED: {
+				const { enabled } = payload;
+				state.advancedDataBreakdownsSettings = {
+					...state.advancedDataBreakdownsSettings,
+					enabled,
+				};
+				break;
+			}
 
-		default:
-			break;
+			default:
+				break;
+		}
 	}
-} );
+);
 
 const baseSelectors = {
 	/**
@@ -195,10 +220,10 @@ const baseSelectors = {
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param {Object} state Data store's state.
-	 * @return {(Object|undefined)} Settings object, or `undefined` while loading.
+	 * @param state Data store's state.
+	 * @return Settings object, or `undefined` while loading.
 	 */
-	getAdvancedDataBreakdownsSettings( state ) {
+	getAdvancedDataBreakdownsSettings( state: AdvancedDataBreakdownsState ) {
 		return state.advancedDataBreakdownsSettings;
 	},
 
@@ -207,10 +232,10 @@ const baseSelectors = {
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @return {(boolean|undefined)} `true` when enabled, `false` when not, `undefined` while loading.
+	 * @return `true` when enabled, `false` when not, `undefined` while loading.
 	 */
 	isAdvancedDataBreakdownsEnabled: createRegistrySelector(
-		( select ) => () => {
+		( select: Select ) => () => {
 			const settings =
 				select(
 					MODULES_ANALYTICS_4

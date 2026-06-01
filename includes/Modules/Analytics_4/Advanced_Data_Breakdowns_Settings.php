@@ -14,7 +14,7 @@ use Google\Site_Kit\Core\Storage\Setting;
 use Google\Site_Kit\Core\Storage\Setting_With_ViewOnly_Keys_Interface;
 
 /**
- * Class for Advanced_Data_Breakdowns_Settings.
+ * Class for reading and writing the advanced data breakdowns settings.
  *
  * @since n.e.x.t
  * @access private
@@ -23,16 +23,16 @@ use Google\Site_Kit\Core\Storage\Setting_With_ViewOnly_Keys_Interface;
 class Advanced_Data_Breakdowns_Settings extends Setting implements Setting_With_ViewOnly_Keys_Interface {
 
 	/**
-	 * The option name for this setting.
+	 * Option name that stores the advanced data breakdowns settings.
 	 */
 	const OPTION = 'googlesitekit_analytics-4_advanced_data_breakdowns';
 
 	/**
-	 * Gets the default value for the setting.
+	 * Gets the default settings, with advanced data breakdowns disabled.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @return array Default value.
+	 * @return array Default settings, with `enabled` set to `false`.
 	 */
 	public function get_default() {
 		return array(
@@ -41,11 +41,11 @@ class Advanced_Data_Breakdowns_Settings extends Setting implements Setting_With_
 	}
 
 	/**
-	 * Gets the type of the setting.
+	 * Gets the setting's storage type.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @return string The type of the setting.
+	 * @return string The storage type, `object`.
 	 */
 	public function get_type() {
 		return 'object';
@@ -56,7 +56,7 @@ class Advanced_Data_Breakdowns_Settings extends Setting implements Setting_With_
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @return callable Sanitize callback.
+	 * @return callable Callback that casts `enabled` to a boolean and keeps the stored value when the input is not an array.
 	 */
 	protected function get_sanitize_callback() {
 		return function ( $option ) {
@@ -75,11 +75,11 @@ class Advanced_Data_Breakdowns_Settings extends Setting implements Setting_With_
 	}
 
 	/**
-	 * Gets the view-only keys for the setting.
+	 * Gets the keys a view-only user is allowed to read.
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @return array List of view-only keys.
+	 * @return array Keys a view-only user may read, currently just `enabled`.
 	 */
 	public function get_view_only_keys() {
 		return array( 'enabled' );
@@ -104,8 +104,8 @@ class Advanced_Data_Breakdowns_Settings extends Setting implements Setting_With_
 	 *
 	 * @since n.e.x.t
 	 *
-	 * @param array $settings Settings to merge.
-	 * @return array Merged settings.
+	 * @param array $settings Settings to merge in. Keys not given keep their stored value.
+	 * @return array The full settings after the merge.
 	 */
 	public function merge( $settings ) {
 		$existing_settings = $this->get();

@@ -17,6 +17,11 @@
  */
 
 /**
+ * External dependencies
+ */
+import { FC } from 'react';
+
+/**
  * WordPress dependencies
  */
 import { useCallback, useEffect, useState } from '@wordpress/element';
@@ -26,7 +31,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { Button, ProgressBar } from 'googlesitekit-components';
-import { useDispatch, useSelect } from 'googlesitekit-data';
+import { Select, useDispatch, useSelect } from 'googlesitekit-data';
 import Notice from '@/js/components/Notice';
 import { NOTICE_TYPES } from '@/js/components/Notice/constants';
 import { CORE_USER } from '@/js/googlesitekit/datastore/user/constants';
@@ -42,26 +47,28 @@ import Tick from '@/svg/icons/tick.svg';
 
 export const ADVANCED_DATA_BREAKDOWNS_FORM = 'advancedDataBreakdownsForm';
 
-export default function SettingsAdvancedDataBreakdowns() {
-	const [ saveError, setSaveError ] = useState( null );
+const SettingsAdvancedDataBreakdowns: FC = () => {
+	const [ saveError, setSaveError ] = useState< { message: string } | null >(
+		null
+	);
 
 	const isSettingsLoaded = useSelect(
-		( select ) =>
+		( select: Select ) =>
 			select( MODULES_ANALYTICS_4 ).isAdvancedDataBreakdownsEnabled() !==
 			undefined
 	);
 
-	const isAdvancedDataBreakdownsEnabled = useSelect( ( select ) =>
+	const isAdvancedDataBreakdownsEnabled = useSelect( ( select: Select ) =>
 		select( MODULES_ANALYTICS_4 ).isAdvancedDataBreakdownsEnabled()
 	);
 
-	const hasAllCustomDimensions = useSelect( ( select ) =>
+	const hasAllCustomDimensions = useSelect( ( select: Select ) =>
 		select( MODULES_ANALYTICS_4 ).hasCustomDimensions(
 			SITE_GOALS_CUSTOM_DIMENSIONS
 		)
 	);
 
-	const hasEditScope = useSelect( ( select ) =>
+	const hasEditScope = useSelect( ( select: Select ) =>
 		select( CORE_USER ).hasScope( EDIT_SCOPE )
 	);
 
@@ -70,13 +77,13 @@ export default function SettingsAdvancedDataBreakdowns() {
 		'autoSubmit'
 	);
 
-	const isSaving = useSelect( ( select ) =>
+	const isSaving = useSelect( ( select: Select ) =>
 		select(
 			MODULES_ANALYTICS_4
 		).isFetchingSaveAdvancedDataBreakdownsSettings()
 	);
 
-	const isCreatingDimensions = useSelect( ( select ) => {
+	const isCreatingDimensions = useSelect( ( select: Select ) => {
 		const customDimensionsBeingCreated = SITE_GOALS_CUSTOM_DIMENSIONS.some(
 			( dimension ) =>
 				select( MODULES_ANALYTICS_4 ).isCreatingCustomDimension(
@@ -210,4 +217,6 @@ export default function SettingsAdvancedDataBreakdowns() {
 			) }
 		</div>
 	);
-}
+};
+
+export default SettingsAdvancedDataBreakdowns;
