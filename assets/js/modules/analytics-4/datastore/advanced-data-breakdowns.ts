@@ -22,6 +22,11 @@
 import invariant from 'invariant';
 
 /**
+ * WordPress dependencies
+ */
+import { WPDataRegistry } from '@wordpress/data/build-types/registry';
+
+/**
  * Internal dependencies
  */
 import { get, set } from 'googlesitekit-api';
@@ -68,7 +73,8 @@ type Action = {
  *
  * @since n.e.x.t
  *
- * @param settings Advanced data breakdowns settings to validate.
+ * @param  settings Advanced data breakdowns settings to validate.
+ * @return {void}
  */
 function validateAdvancedDataBreakdownsSettings( settings: unknown ) {
 	invariant(
@@ -90,6 +96,23 @@ const fetchStoreReducerCallback = createReducer(
 	}
 );
 
+// `createFetchStore` is an untyped helper that returns a generic object, so we
+// describe the one fetch action we call on each store here. The rest of the
+// store shape (controls, reducer, selectors) is merged in by `combineStores`.
+interface FetchGetStore {
+	actions: {
+		fetchGetAdvancedDataBreakdownsSettings: () => unknown;
+	};
+}
+
+interface FetchSaveStore {
+	actions: {
+		fetchSaveAdvancedDataBreakdownsSettings: (
+			settings: AdvancedDataBreakdownsSettings
+		) => unknown;
+	};
+}
+
 const fetchGetAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 	baseName: 'getAdvancedDataBreakdownsSettings',
 	controlCallback() {
@@ -98,13 +121,13 @@ const fetchGetAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 			MODULE_SLUG_ANALYTICS_4,
 			'advanced-data-breakdowns-settings',
 			{},
-			{
-				useCache: false,
-			}
+			// The shared `get()` helper types its options as all-required, but
+			// they are optional at runtime, so cast to pass only `useCache`.
+			{ useCache: false } as Parameters< typeof get >[ 4 ]
 		);
 	},
 	reducerCallback: fetchStoreReducerCallback,
-} );
+} ) as FetchGetStore;
 
 const fetchSaveAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 	baseName: 'saveAdvancedDataBreakdownsSettings',
@@ -119,7 +142,7 @@ const fetchSaveAdvancedDataBreakdownsSettingsStore = createFetchStore( {
 	argsToParams: ( settings: AdvancedDataBreakdownsSettings ) => settings,
 	validateParams: validateAdvancedDataBreakdownsSettings,
 	isAction: true,
-} );
+} ) as FetchSaveStore;
 
 const baseInitialState: AdvancedDataBreakdownsState = {
 	advancedDataBreakdownsSettings: undefined,
@@ -155,8 +178,13 @@ const baseActions = {
 	 */
 	saveAdvancedDataBreakdownsSettings: createValidatedAction(
 		() => {},
-		function* () {
-			const registry = yield commonActions.getRegistry();
+		function* (): Generator<
+			unknown,
+			{ response: unknown; error: unknown },
+			unknown
+		> {
+			const registryResult = yield commonActions.getRegistry();
+			const registry = registryResult as WPDataRegistry;
 			const settings = registry
 				.select( MODULES_ANALYTICS_4 )
 				.getAdvancedDataBreakdownsSettings();
@@ -165,10 +193,15 @@ const baseActions = {
 
 			yield clearActionError( 'saveAdvancedDataBreakdownsSettings', [] );
 
-			const { response, error } =
+			const saveResponse =
 				yield fetchSaveAdvancedDataBreakdownsSettingsStore.actions.fetchSaveAdvancedDataBreakdownsSettings(
-					settings
+					settings as AdvancedDataBreakdownsSettings
 				);
+
+			const { response, error } = saveResponse as {
+				response: unknown;
+				error: unknown;
+			};
 
 			if ( error ) {
 				yield setErrorForAction(
@@ -184,8 +217,9 @@ const baseActions = {
 };
 
 const baseResolvers = {
-	*getAdvancedDataBreakdownsSettings() {
-		const registry = yield commonActions.getRegistry();
+	*getAdvancedDataBreakdownsSettings(): Generator< unknown, void, unknown > {
+		const registryResult = yield commonActions.getRegistry();
+		const registry = registryResult as WPDataRegistry;
 		const settings = registry
 			.select( MODULES_ANALYTICS_4 )
 			.getAdvancedDataBreakdownsSettings();
@@ -250,6 +284,19 @@ const baseSelectors = {
 	),
 };
 
+// `combineStores` is an untyped helper that returns a generic object, so we
+// describe the merged store's shape and cast to it (the same approach as
+// `core/pdf`). `controls` is contributed by the fetch stores, so it stays
+// loosely typed here.
+interface Store {
+	initialState: AdvancedDataBreakdownsState;
+	actions: typeof baseActions;
+	controls: Record< string, unknown >;
+	reducer: typeof baseReducer;
+	resolvers: typeof baseResolvers;
+	selectors: typeof baseSelectors;
+}
+
 const store = combineStores(
 	fetchGetAdvancedDataBreakdownsSettingsStore,
 	fetchSaveAdvancedDataBreakdownsSettingsStore,
@@ -260,7 +307,7 @@ const store = combineStores(
 		selectors: baseSelectors,
 		reducer: baseReducer,
 	}
-);
+) as Store;
 
 export const initialState = store.initialState;
 export const actions = store.actions;

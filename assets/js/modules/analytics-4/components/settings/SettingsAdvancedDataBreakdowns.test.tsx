@@ -33,6 +33,8 @@ import {
 import {
 	createTestRegistry,
 	fireEvent,
+	freezeFetch,
+	provideModules,
 	provideSiteInfo,
 	provideUserAuthentication,
 	render,
@@ -46,6 +48,7 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 
 	beforeEach( () => {
 		registry = createTestRegistry();
+		provideModules( registry );
 		provideSiteInfo( registry );
 		provideUserAuthentication( registry, {
 			grantedScopes: [ EDIT_SCOPE ],
@@ -57,6 +60,14 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 	} );
 
 	it( 'shows a progress bar while the setting is loading', () => {
+		// Keep the settings request pending so the row stays in its loading
+		// state instead of erroring on an unmatched fetch.
+		freezeFetch(
+			new RegExp(
+				'^/google-site-kit/v1/modules/analytics-4/data/advanced-data-breakdowns-settings'
+			)
+		);
+
 		const { container } = render( <SettingsAdvancedDataBreakdowns />, {
 			registry,
 		} );
@@ -77,7 +88,9 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 			registry,
 		} );
 
-		expect( getByRole( 'button', { name: /enable/i } ) ).toBeInTheDocument();
+		expect(
+			getByRole( 'button', { name: /enable/i } )
+		).toBeInTheDocument();
 	} );
 
 	it( 'shows the green tick and hides the Enable button when all dimensions exist', () => {

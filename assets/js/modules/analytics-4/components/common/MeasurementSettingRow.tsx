@@ -51,14 +51,6 @@ interface MeasurementSettingRowProps {
 	action?: ReactNode;
 }
 
-/**
- * Renders one row in the "Improve your measurement" settings group: a star or
- * green tick icon, a title, helper text, and an Enable action that hides once
- * the setting is on. Shared by the Advanced data breakdowns and Enhanced
- * measurement rows so they stay identical.
- *
- * @since n.e.x.t
- */
 const MeasurementSettingRow: FC< MeasurementSettingRowProps > = ( {
 	isEnabled = false,
 	loading = false,

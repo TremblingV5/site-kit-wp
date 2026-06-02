@@ -128,9 +128,6 @@ const baseActions = {
 				registry.resolveSelect( MODULES_ANALYTICS_4 ).getSettings(),
 				registry.resolveSelect( CORE_USER ).getKeyMetricsSettings(),
 				registry.resolveSelect( CORE_USER ).getUserInputSettings(),
-				registry
-					.resolveSelect( MODULES_ANALYTICS_4 )
-					.isAdvancedDataBreakdownsEnabled(),
 			] )
 		);
 
@@ -155,6 +152,11 @@ const baseActions = {
 			...new Set( requiredCustomDimensions ),
 		];
 
+		// Read the setting without forcing it to load. The settings row sets
+		// this value before it calls this action, so it is ready there. Other
+		// callers (eg. key metrics setup) leave it unloaded, so it reads as
+		// `undefined` and the Site Goals dimensions are skipped, which is what
+		// we want for those flows.
 		const isAdvancedDataBreakdownsEnabled = registry
 			.select( MODULES_ANALYTICS_4 )
 			.isAdvancedDataBreakdownsEnabled();
