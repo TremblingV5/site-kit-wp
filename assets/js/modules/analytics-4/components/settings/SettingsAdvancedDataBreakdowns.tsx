@@ -25,6 +25,7 @@ import { FC } from 'react';
  * WordPress dependencies
  */
 import {
+	Fragment,
 	createInterpolateElement,
 	useCallback,
 	useEffect,
@@ -35,7 +36,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { ProgressBar, SpinnerButton } from 'googlesitekit-components';
+import { SpinnerButton } from 'googlesitekit-components';
 import { Select, useDispatch, useSelect } from 'googlesitekit-data';
 import Link from '@/js/components/Link';
 import Notice from '@/js/components/Notice';
@@ -43,14 +44,13 @@ import { NOTICE_TYPES } from '@/js/components/Notice/constants';
 import { CORE_SITE } from '@/js/googlesitekit/datastore/site/constants';
 import { CORE_USER } from '@/js/googlesitekit/datastore/user/constants';
 import useFormValue from '@/js/hooks/useFormValue';
+import MeasurementSettingRow from '@/js/modules/analytics-4/components/common/MeasurementSettingRow';
 import {
 	EDIT_SCOPE,
 	MODULES_ANALYTICS_4,
 	SITE_GOALS_CUSTOM_DIMENSIONS,
 } from '@/js/modules/analytics-4/datastore/constants';
 import { ERROR_CODE_MISSING_REQUIRED_SCOPE } from '@/js/util/errors';
-import StarFill from '@/svg/icons/star-fill.svg';
-import Tick from '@/svg/icons/tick.svg';
 
 export const ADVANCED_DATA_BREAKDOWNS_FORM = 'advancedDataBreakdownsForm';
 
@@ -62,25 +62,35 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 	const isSettingsLoaded = useSelect(
 		( select: Select ) =>
 			select( MODULES_ANALYTICS_4 ).isAdvancedDataBreakdownsEnabled() !==
-			undefined
+			undefined,
+		[]
 	);
 
-	const isAdvancedDataBreakdownsEnabled = useSelect( ( select: Select ) =>
-		select( MODULES_ANALYTICS_4 ).isAdvancedDataBreakdownsEnabled()
+	const isAdvancedDataBreakdownsEnabled = useSelect(
+		( select: Select ) =>
+			select( MODULES_ANALYTICS_4 ).isAdvancedDataBreakdownsEnabled(),
+		[]
 	);
 
-	const hasAllCustomDimensions = useSelect( ( select: Select ) =>
-		select( MODULES_ANALYTICS_4 ).hasCustomDimensions(
-			SITE_GOALS_CUSTOM_DIMENSIONS
-		)
+	const hasAllCustomDimensions = useSelect(
+		( select: Select ) =>
+			select( MODULES_ANALYTICS_4 ).hasCustomDimensions(
+				SITE_GOALS_CUSTOM_DIMENSIONS
+			),
+		[]
 	);
 
-	const hasEditScope = useSelect( ( select: Select ) =>
-		select( CORE_USER ).hasScope( EDIT_SCOPE )
+	const hasEditScope = useSelect(
+		( select: Select ) => select( CORE_USER ).hasScope( EDIT_SCOPE ),
+		[]
 	);
 
-	const documentationURL = useSelect( ( select: Select ) =>
-		select( CORE_SITE ).getDocumentationLinkURL( 'advanced-data-breakdowns' )
+	const documentationURL = useSelect(
+		( select: Select ) =>
+			select( CORE_SITE ).getDocumentationLinkURL(
+				'advanced-data-breakdowns'
+			),
+		[]
 	);
 
 	const [ autoSubmit, setAutoSubmit ] = useFormValue(
@@ -88,10 +98,12 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 		'autoSubmit'
 	);
 
-	const isSaving = useSelect( ( select: Select ) =>
-		select(
-			MODULES_ANALYTICS_4
-		).isFetchingSaveAdvancedDataBreakdownsSettings()
+	const isSaving = useSelect(
+		( select: Select ) =>
+			select(
+				MODULES_ANALYTICS_4
+			).isFetchingSaveAdvancedDataBreakdownsSettings(),
+		[]
 	);
 
 	const isCreatingDimensions = useSelect( ( select: Select ) => {
@@ -106,7 +118,7 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 			customDimensionsBeingCreated ||
 			select( MODULES_ANALYTICS_4 ).isSyncingAvailableCustomDimensions()
 		);
-	} );
+	}, [] );
 
 	const {
 		setAdvancedDataBreakdownsEnabled,
@@ -167,14 +179,6 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 		}
 	}, [ autoSubmit, enableAndCreate, hasEditScope, setAutoSubmit ] );
 
-	if ( ! isSettingsLoaded ) {
-		return (
-			<div className="googlesitekit-settings-advanced-data-breakdowns googlesitekit-settings-advanced-data-breakdowns--loading">
-				<ProgressBar small />
-			</div>
-		);
-	}
-
 	const isComplete =
 		isAdvancedDataBreakdownsEnabled && hasAllCustomDimensions === true;
 
@@ -200,41 +204,25 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 		  );
 
 	return (
-		<div className="googlesitekit-settings-advanced-data-breakdowns">
-			<div className="googlesitekit-settings-advanced-data-breakdowns__row">
-				<div className="googlesitekit-settings-advanced-data-breakdowns__icon">
-					{ isComplete ? (
-						<div className="googlesitekit-settings-advanced-data-breakdowns__tick">
-							<Tick />
-						</div>
-					) : (
-						<StarFill />
-					) }
-				</div>
-
-				<div className="googlesitekit-settings-advanced-data-breakdowns__content">
-					<p className="googlesitekit-settings-advanced-data-breakdowns__title">
-						{ __( 'Advanced data breakdowns', 'google-site-kit' ) }
-					</p>
-					<p className="googlesitekit-module-settings-group__helper-text">
-						{ createInterpolateElement( helperText, {
-							a: learnMoreLink,
-						} ) }
-					</p>
-				</div>
-
-				{ ! isComplete && (
-					<div className="googlesitekit-settings-advanced-data-breakdowns__action">
-						<SpinnerButton
-							onClick={ handleEnable }
-							disabled={ isSaving || isCreatingDimensions }
-							isSaving={ isSaving || isCreatingDimensions }
-						>
-							{ __( 'Enable', 'google-site-kit' ) }
-						</SpinnerButton>
-					</div>
-				) }
-			</div>
+		<Fragment>
+			<MeasurementSettingRow
+				loading={ ! isSettingsLoaded }
+				isEnabled={ isComplete }
+				title={ __( 'Advanced data breakdowns', 'google-site-kit' ) }
+				description={ createInterpolateElement( helperText, {
+					a: learnMoreLink,
+				} ) }
+				action={
+					// @ts-expect-error - The `SpinnerButton` component is not typed yet.
+					<SpinnerButton
+						onClick={ handleEnable }
+						disabled={ isSaving || isCreatingDimensions }
+						isSaving={ isSaving || isCreatingDimensions }
+					>
+						{ __( 'Enable', 'google-site-kit' ) }
+					</SpinnerButton>
+				}
+			/>
 
 			{ saveError && (
 				<Notice
@@ -246,7 +234,7 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 					} }
 				/>
 			) }
-		</div>
+		</Fragment>
 	);
 };
 

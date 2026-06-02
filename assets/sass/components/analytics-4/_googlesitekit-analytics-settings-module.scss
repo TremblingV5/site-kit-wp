@@ -78,20 +78,17 @@
 		}
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns--loading,
-	.googlesitekit-settings-enhanced-measurement-row--loading {
+	.googlesitekit-settings-measurement-row--loading {
 		padding-top: 10px;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__row,
-	.googlesitekit-settings-enhanced-measurement-row__row {
+	.googlesitekit-settings-measurement-row__row {
 		align-items: flex-start;
 		display: flex;
 		gap: 12px;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__icon,
-	.googlesitekit-settings-enhanced-measurement-row__icon {
+	.googlesitekit-settings-measurement-row__icon {
 		align-items: center;
 		background-color: rgba($c-purple-heart, 0.12);
 		border-radius: 50%;
@@ -108,8 +105,7 @@
 		}
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__tick,
-	.googlesitekit-settings-enhanced-measurement-row__tick {
+	.googlesitekit-settings-measurement-row__tick {
 		align-items: center;
 		background-color: $c-success;
 		border-radius: 50%;
@@ -126,19 +122,16 @@
 		}
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__content,
-	.googlesitekit-settings-enhanced-measurement-row__content {
+	.googlesitekit-settings-measurement-row__content {
 		flex: 1;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__title,
-	.googlesitekit-settings-enhanced-measurement-row__title {
+	.googlesitekit-settings-measurement-row__title {
 		font-weight: 500;
 		margin: 0;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__action,
-	.googlesitekit-settings-enhanced-measurement-row__action {
+	.googlesitekit-settings-measurement-row__action {
 		flex-shrink: 0;
 	}
 }

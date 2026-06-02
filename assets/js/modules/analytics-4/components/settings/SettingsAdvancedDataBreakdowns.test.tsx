@@ -63,7 +63,7 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 
 		expect(
 			container.querySelector(
-				'.googlesitekit-settings-advanced-data-breakdowns--loading'
+				'.googlesitekit-settings-measurement-row--loading'
 			)
 		).toBeInTheDocument();
 	} );
@@ -96,7 +96,7 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 
 		expect(
 			container.querySelector(
-				'.googlesitekit-settings-advanced-data-breakdowns__tick'
+				'.googlesitekit-settings-measurement-row__tick'
 			)
 		).toBeInTheDocument();
 		expect(

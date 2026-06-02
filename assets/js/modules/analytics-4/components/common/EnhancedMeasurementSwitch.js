@@ -43,8 +43,8 @@ import {
 	ENHANCED_MEASUREMENT_SHOULD_DISMISS_ACTIVATION_BANNER,
 } from '@/js/modules/analytics-4/datastore/constants';
 import { trackEvent } from '@/js/util';
-import StarFill from '@/svg/icons/star-fill.svg';
 import Tick from '@/svg/icons/tick.svg';
+import MeasurementSettingRow from './MeasurementSettingRow';
 
 export default function EnhancedMeasurementSwitch( {
 	className,
@@ -102,66 +102,30 @@ export default function EnhancedMeasurementSwitch( {
 			isEnhancedMeasurementEnabled || isEnhancedMeasurementAlreadyEnabled;
 
 		return (
-			<div
-				className={ classnames(
-					'googlesitekit-settings-enhanced-measurement-row',
-					className,
+			<MeasurementSettingRow
+				loading={ loading }
+				isEnabled={ isEnabled }
+				title={ __( 'Enhanced measurement', 'google-site-kit' ) }
+				description={ createInterpolateElement(
+					__(
+						'This allows you to measure interactions with your content (e.g. file downloads, form completions, video views). <a>Learn more</a>',
+						'google-site-kit'
+					),
 					{
-						'googlesitekit-settings-enhanced-measurement-row--loading':
-							loading,
+						a: (
+							<SupportLink
+								path="/analytics/answer/9216061"
+								external
+							/>
+						),
 					}
 				) }
-			>
-				{ loading ? (
-					<ProgressBar small />
-				) : (
-					<div className="googlesitekit-settings-enhanced-measurement-row__row">
-						<div
-							className={
-								isEnabled
-									? 'googlesitekit-settings-enhanced-measurement-row__tick'
-									: 'googlesitekit-settings-enhanced-measurement-row__icon'
-							}
-						>
-							{ isEnabled ? <Tick /> : <StarFill /> }
-						</div>
-						<div className="googlesitekit-settings-enhanced-measurement-row__content">
-							<p className="googlesitekit-settings-enhanced-measurement-row__title">
-								{ __(
-									'Enhanced measurement',
-									'google-site-kit'
-								) }
-							</p>
-							<p className="googlesitekit-module-settings-group__helper-text">
-								{ createInterpolateElement(
-									__(
-										'This allows you to measure interactions with your content (e.g. file downloads, form completions, video views). <a>Learn more</a>',
-										'google-site-kit'
-									),
-									{
-										a: (
-											<SupportLink
-												path="/analytics/answer/9216061"
-												external
-											/>
-										),
-									}
-								) }
-							</p>
-						</div>
-						{ ! isEnabled && (
-							<div className="googlesitekit-settings-enhanced-measurement-row__action">
-								<Button
-									onClick={ handleClick }
-									disabled={ disabled }
-								>
-									{ __( 'Enable', 'google-site-kit' ) }
-								</Button>
-							</div>
-						) }
-					</div>
-				) }
-			</div>
+				action={
+					<Button onClick={ handleClick } disabled={ disabled }>
+						{ __( 'Enable', 'google-site-kit' ) }
+					</Button>
+				}
+			/>
 		);
 	}
 
