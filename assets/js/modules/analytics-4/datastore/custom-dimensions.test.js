@@ -25,6 +25,7 @@ import { times } from 'lodash';
  * Internal dependencies
  */
 import { setUsingCache } from 'googlesitekit-api';
+import { enabledFeatures } from '@/js/features';
 import {
 	CORE_USER,
 	KM_ANALYTICS_POPULAR_AUTHORS,
@@ -190,11 +191,21 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 			};
 
 			beforeEach( () => {
+				// Turn the Site Goals feature flag on. The fold-in still only
+				// runs when the advanced data breakdowns setting is also on,
+				// which each test sets for itself, so the flag being on here is
+				// safe for the tests that leave the setting off.
+				enabledFeatures.add( 'siteGoals' );
+
 				registry
 					.dispatch( MODULES_ANALYTICS_4 )
 					.receiveGetAdvancedDataBreakdownsSettings( {
 						enabled: false,
 					} );
+			} );
+
+			afterEach( () => {
+				enabledFeatures.delete( 'siteGoals' );
 			} );
 
 			it( 'does not make a network request if there are no missing custom dimensions', async () => {
@@ -241,11 +252,6 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 			} );
 
 			it( 'includes the Site Goals dimensions when the flag and the setting are both on', async () => {
-				global._googlesitekitBaseData = {
-					...( global._googlesitekitBaseData || {} ),
-					enabledFeatures: [ 'siteGoals' ],
-				};
-
 				registry
 					.dispatch( MODULES_ANALYTICS_4 )
 					.receiveGetAdvancedDataBreakdownsSettings( {
@@ -291,12 +297,14 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 					( payload ) => payload?.data?.customDimension?.parameterName
 				);
 
+				// The fold-in adds the Site Goals dimensions that have a
+				// definition (post_date and post_type here) to the required
+				// set, so they get created. googlesitekit_event_provider and
+				// googlesitekit_form_id have no entry in
+				// CUSTOM_DIMENSION_DEFINITIONS yet (that arrives with #12775),
+				// so they cannot be created and are not asserted here.
 				expect( dimensionNames ).toContain( 'googlesitekit_post_date' );
 				expect( dimensionNames ).toContain( 'googlesitekit_post_type' );
-				expect( dimensionNames ).toContain(
-					'googlesitekit_event_provider'
-				);
-				expect( dimensionNames ).toContain( 'googlesitekit_form_id' );
 			} );
 
 			it( 'creates missing custom dimensions and syncs them in the Analytics 4 module settings', async () => {

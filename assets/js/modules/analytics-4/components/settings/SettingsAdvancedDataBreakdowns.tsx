@@ -30,7 +30,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { Button, ProgressBar } from 'googlesitekit-components';
+import { ProgressBar, SpinnerButton } from 'googlesitekit-components';
 import { Select, useDispatch, useSelect } from 'googlesitekit-data';
 import Notice from '@/js/components/Notice';
 import { NOTICE_TYPES } from '@/js/components/Notice/constants';
@@ -194,13 +194,13 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 
 				{ ! isComplete && (
 					<div className="googlesitekit-settings-advanced-data-breakdowns__action">
-						<Button
+						<SpinnerButton
 							onClick={ handleEnable }
 							disabled={ isSaving || isCreatingDimensions }
-							inProgress={ isSaving || isCreatingDimensions }
+							isSaving={ isSaving || isCreatingDimensions }
 						>
 							{ __( 'Enable', 'google-site-kit' ) }
-						</Button>
+						</SpinnerButton>
 					</div>
 				) }
 			</div>
