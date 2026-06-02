@@ -78,57 +78,67 @@
 		}
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns--loading {
+	.googlesitekit-settings-advanced-data-breakdowns--loading,
+	.googlesitekit-settings-enhanced-measurement-row--loading {
 		padding-top: 10px;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__row {
+	.googlesitekit-settings-advanced-data-breakdowns__row,
+	.googlesitekit-settings-enhanced-measurement-row__row {
 		align-items: flex-start;
 		display: flex;
 		gap: 12px;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__icon {
+	.googlesitekit-settings-advanced-data-breakdowns__icon,
+	.googlesitekit-settings-enhanced-measurement-row__icon {
 		align-items: center;
-		color: $c-content-primary;
+		background-color: rgba($c-purple-heart, 0.12);
+		border-radius: 50%;
+		color: $c-purple-heart;
 		display: flex;
 		flex-shrink: 0;
-		height: 20px;
+		height: 24px;
 		justify-content: center;
-		width: 20px;
+		width: 24px;
 
 		svg {
-			height: 16px;
-			width: 16px;
+			height: 12px;
+			width: 12px;
 		}
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__tick {
+	.googlesitekit-settings-advanced-data-breakdowns__tick,
+	.googlesitekit-settings-enhanced-measurement-row__tick {
 		align-items: center;
-		background-color: $c-content-primary;
-		border-radius: 11px;
+		background-color: $c-success;
+		border-radius: 50%;
 		color: $c-content-on-primary;
 		display: flex;
-		height: 20px;
+		flex-shrink: 0;
+		height: 24px;
 		justify-content: center;
-		width: 20px;
+		width: 24px;
 
 		svg {
-			height: 10px;
-			width: 10px;
+			height: 12px;
+			width: 12px;
 		}
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__content {
+	.googlesitekit-settings-advanced-data-breakdowns__content,
+	.googlesitekit-settings-enhanced-measurement-row__content {
 		flex: 1;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__title {
+	.googlesitekit-settings-advanced-data-breakdowns__title,
+	.googlesitekit-settings-enhanced-measurement-row__title {
 		font-weight: 500;
 		margin: 0;
 	}
 
-	.googlesitekit-settings-advanced-data-breakdowns__action {
+	.googlesitekit-settings-advanced-data-breakdowns__action,
+	.googlesitekit-settings-enhanced-measurement-row__action {
 		flex-shrink: 0;
 	}
 }

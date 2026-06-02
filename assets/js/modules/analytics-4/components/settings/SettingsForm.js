@@ -78,10 +78,6 @@ export default function SettingsForm( { hasModuleAccess } ) {
 			<SettingsGroup
 				title={ __( 'Improve your measurement', 'google-site-kit' ) }
 			>
-				<SettingsEnhancedMeasurementSwitch
-					hasModuleAccess={ hasModuleAccess }
-				/>
-				{ siteGoalsEnabled && <SettingsAdvancedDataBreakdowns /> }
 				<ConversionTrackingToggle>
 					{ createInterpolateElement(
 						__(
@@ -102,6 +98,10 @@ export default function SettingsForm( { hasModuleAccess } ) {
 						}
 					) }
 				</ConversionTrackingToggle>
+				<SettingsEnhancedMeasurementSwitch
+					hasModuleAccess={ hasModuleAccess }
+				/>
+				{ siteGoalsEnabled && <SettingsAdvancedDataBreakdowns /> }
 				{ gtgEnabled && <GoogleTagGatewayToggle /> }
 				{ gtagUserDataEnabled && (
 					<EnhancedConversionsSettingsNotice

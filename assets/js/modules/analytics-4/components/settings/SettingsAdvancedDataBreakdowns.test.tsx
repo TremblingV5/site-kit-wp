@@ -33,6 +33,7 @@ import {
 import {
 	createTestRegistry,
 	fireEvent,
+	provideSiteInfo,
 	provideUserAuthentication,
 	render,
 	waitFor,
@@ -45,6 +46,7 @@ describe( 'SettingsAdvancedDataBreakdowns', () => {
 
 	beforeEach( () => {
 		registry = createTestRegistry();
+		provideSiteInfo( registry );
 		provideUserAuthentication( registry, {
 			grantedScopes: [ EDIT_SCOPE ],
 		} );

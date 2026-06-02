@@ -24,7 +24,12 @@ import { FC } from 'react';
 /**
  * WordPress dependencies
  */
-import { useCallback, useEffect, useState } from '@wordpress/element';
+import {
+	createInterpolateElement,
+	useCallback,
+	useEffect,
+	useState,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -32,8 +37,10 @@ import { __ } from '@wordpress/i18n';
  */
 import { ProgressBar, SpinnerButton } from 'googlesitekit-components';
 import { Select, useDispatch, useSelect } from 'googlesitekit-data';
+import Link from '@/js/components/Link';
 import Notice from '@/js/components/Notice';
 import { NOTICE_TYPES } from '@/js/components/Notice/constants';
+import { CORE_SITE } from '@/js/googlesitekit/datastore/site/constants';
 import { CORE_USER } from '@/js/googlesitekit/datastore/user/constants';
 import useFormValue from '@/js/hooks/useFormValue';
 import {
@@ -70,6 +77,10 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 
 	const hasEditScope = useSelect( ( select: Select ) =>
 		select( CORE_USER ).hasScope( EDIT_SCOPE )
+	);
+
+	const documentationURL = useSelect( ( select: Select ) =>
+		select( CORE_SITE ).getDocumentationLinkURL( 'advanced-data-breakdowns' )
 	);
 
 	const [ autoSubmit, setAutoSubmit ] = useFormValue(
@@ -167,6 +178,27 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 	const isComplete =
 		isAdvancedDataBreakdownsEnabled && hasAllCustomDimensions === true;
 
+	const learnMoreLink = (
+		<Link
+			href={ documentationURL }
+			aria-label={ __(
+				'Learn more about advanced data breakdowns',
+				'google-site-kit'
+			) }
+			external
+		/>
+	);
+
+	const helperText = isComplete
+		? __(
+				'Detailed performance tracking and access to the most granular data available, enabled by granting Site Kit permission to create custom dimensions in Google Analytics. <a>Learn more</a>',
+				'google-site-kit'
+		  )
+		: __(
+				'Grant Site Kit permission to create custom dimensions in Google Analytics. This enables detailed performance tracking and access to the most granular data available. <a>Learn more</a>',
+				'google-site-kit'
+		  );
+
 	return (
 		<div className="googlesitekit-settings-advanced-data-breakdowns">
 			<div className="googlesitekit-settings-advanced-data-breakdowns__row">
@@ -182,13 +214,12 @@ const SettingsAdvancedDataBreakdowns: FC = () => {
 
 				<div className="googlesitekit-settings-advanced-data-breakdowns__content">
 					<p className="googlesitekit-settings-advanced-data-breakdowns__title">
-						{ __( 'Custom Dimensions', 'google-site-kit' ) }
+						{ __( 'Advanced data breakdowns', 'google-site-kit' ) }
 					</p>
 					<p className="googlesitekit-module-settings-group__helper-text">
-						{ __(
-							'Enable custom dimensions to unlock the Site Goals widget and richer breakdowns for your content.',
-							'google-site-kit'
-						) }
+						{ createInterpolateElement( helperText, {
+							a: learnMoreLink,
+						} ) }
 					</p>
 				</div>
 
