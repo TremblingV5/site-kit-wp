@@ -40,11 +40,8 @@ import {
 	MODULES_ANALYTICS_4,
 } from '@/js/modules/analytics-4/datastore/constants';
 import { provideAnalytics4MockReport } from '@/js/modules/analytics-4/utils/data-mock';
-import { render } from '../../../../../../../tests/js/test-utils';
-import {
-	createTestRegistry,
-	provideModules,
-} from '../../../../../../../tests/js/utils';
+import { render } from '@tests/js/test-utils';
+import { createTestRegistry, provideModules } from '@tests/js/utils';
 import OnlineStorePerformanceWidget from './OnlineStorePerformanceWidget';
 
 type WidgetComponentProps = ReturnType< typeof getWidgetComponentProps >;
@@ -585,7 +582,7 @@ describe( 'OnlineStorePerformanceWidget', () => {
 		expect(
 			getByText( 'Top traffic channels by sales rate' )
 		).toBeInTheDocument();
-		expect( getByText( 'Sales by cities' ) ).toBeInTheDocument();
+		expect( getByText( 'Sales by visitor type' ) ).toBeInTheDocument();
 		expect( getAllByText( 'Organic Search' ).length ).toBeGreaterThan( 0 );
 		expect(
 			container.querySelectorAll(
@@ -662,7 +659,7 @@ describe( 'OnlineStorePerformanceWidget', () => {
 		expect(
 			getByText( 'Top traffic channels by sales rate' )
 		).toBeInTheDocument();
-		expect( getByText( 'Sales by cities' ) ).toBeInTheDocument();
+		expect( getByText( 'Sales by visitor type' ) ).toBeInTheDocument();
 	} );
 
 	it( 'uses purchase as primary event when both purchase and add_to_cart are detected', async () => {
@@ -707,7 +704,7 @@ describe( 'OnlineStorePerformanceWidget', () => {
 		expect(
 			getByText( 'Top traffic channels by sales rate' )
 		).toBeInTheDocument();
-		expect( getByText( 'Sales by cities' ) ).toBeInTheDocument();
+		expect( getByText( 'Sales by visitor type' ) ).toBeInTheDocument();
 	} );
 
 	it( 'computes zero rate when sessions count is zero', async () => {

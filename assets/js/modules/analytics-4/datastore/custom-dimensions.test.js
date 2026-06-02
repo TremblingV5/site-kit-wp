@@ -39,8 +39,8 @@ import {
 	provideSiteInfo,
 	provideUserAuthentication,
 	untilResolved,
-} from '../../../../../tests/js/utils';
-import { MODULES_ANALYTICS_4 } from './constants';
+} from '@tests/js/utils';
+import { CUSTOM_DIMENSION_DEFINITIONS, MODULES_ANALYTICS_4 } from './constants';
 
 describe( 'modules/analytics-4 custom-dimensions', () => {
 	let registry;
@@ -74,6 +74,30 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 
 	afterAll( () => {
 		setUsingCache( true );
+	} );
+
+	describe( 'CUSTOM_DIMENSION_DEFINITIONS', () => {
+		it( 'should include googlesitekit_event_provider with EVENT scope', () => {
+			expect(
+				CUSTOM_DIMENSION_DEFINITIONS.googlesitekit_event_provider
+			).toEqual(
+				expect.objectContaining( {
+					parameterName: 'googlesitekit_event_provider',
+					scope: 'EVENT',
+				} )
+			);
+		} );
+
+		it( 'should include googlesitekit_form_id with EVENT scope', () => {
+			expect(
+				CUSTOM_DIMENSION_DEFINITIONS.googlesitekit_form_id
+			).toEqual(
+				expect.objectContaining( {
+					parameterName: 'googlesitekit_form_id',
+					scope: 'EVENT',
+				} )
+			);
+		} );
 	} );
 
 	describe( 'actions', () => {
@@ -372,6 +396,50 @@ describe( 'modules/analytics-4 custom-dimensions', () => {
 							)
 					).toBe( true );
 				} );
+			} );
+
+			it( 'creates explicitly requested missing custom dimensions', async () => {
+				registry
+					.dispatch( CORE_USER )
+					.receiveGetUserInputSettings( coreUserInputSettings );
+				registry.dispatch( CORE_USER ).receiveGetKeyMetricsSettings( {
+					widgetSlugs: [],
+					isWidgetHidden: false,
+				} );
+				registry.dispatch( MODULES_ANALYTICS_4 ).setSettings( {
+					propertyID,
+					availableCustomDimensions: [],
+				} );
+
+				fetchMock.postOnce(
+					new RegExp(
+						'^/google-site-kit/v1/modules/analytics-4/data/create-custom-dimension'
+					),
+					{
+						body: customDimension,
+						status: 200,
+					}
+				);
+				fetchMock.postOnce(
+					new RegExp(
+						'^/google-site-kit/v1/modules/analytics-4/data/sync-custom-dimensions'
+					),
+					{
+						body: [ 'googlesitekit_post_author' ],
+						status: 200,
+					}
+				);
+
+				await registry
+					.dispatch( MODULES_ANALYTICS_4 )
+					.createCustomDimensions( [ 'googlesitekit_post_author' ] );
+
+				expect( fetchMock ).toHaveFetchedTimes( 2 );
+				expect(
+					registry
+						.select( MODULES_ANALYTICS_4 )
+						.getAvailableCustomDimensions()
+				).toEqual( [ 'googlesitekit_post_author' ] );
 			} );
 		} );
 

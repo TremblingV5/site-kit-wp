@@ -115,9 +115,10 @@ const baseActions = {
 	 * Creates custom dimensions and syncs them in the settings.
 	 *
 	 * @since 1.113.0
-	 * @since n.e.x.t Added the Site Goals custom dimensions when the `siteGoals` feature flag is on and advanced data breakdowns is enabled.
+	 *
+	 * @param {Array<string>} customDimensions Optional additional custom dimensions to create.
 	 */
-	*createCustomDimensions() {
+	*createCustomDimensions( customDimensions = [] ) {
 		const registry = yield commonActions.getRegistry();
 
 		// Wait for the necessary settings to be loaded before checking.
@@ -137,12 +138,16 @@ const baseActions = {
 			.getKeyMetrics();
 
 		// Extract required custom dimensions from selected metric tiles.
-		const requiredCustomDimensions = selectedMetricTiles.flatMap(
+		const keyMetricsRequiredCustomDimensions = selectedMetricTiles.flatMap(
 			( tileName ) => {
 				const tile = KEY_METRICS_WIDGETS[ tileName ];
 				return tile?.requiredCustomDimensions || [];
 			}
 		);
+		const requiredCustomDimensions = [
+			...keyMetricsRequiredCustomDimensions,
+			...( Array.isArray( customDimensions ) ? customDimensions : [] ),
+		];
 
 		// Deduplicate if any custom dimensions are repeated among tiles.
 		const uniqueRequiredCustomDimensions = [
